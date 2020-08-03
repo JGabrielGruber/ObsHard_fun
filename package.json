@@ -5,10 +5,10 @@
 	"main": "src/index.js",
 	"scripts": {
 		"lint": "eslint .",
-		"serve": "firebase emulators:start --only functions",
+		"serve": "firebase emulators:start",
 		"shell": "firebase functions:shell",
 		"start": "node -r dotenv/config -r esm src/index.js",
-		"deploy": "firebase deploy --only functions",
+		"deploy": "firebase deploy",
 		"logs": "firebase functions:log"
 	},
 	"engines": {
@@ -17,7 +17,7 @@
 	"dependencies": {
 		"dotenv": "^8.2.0",
 		"esm": "^3.2.25",
-		"firebase-admin": "^8.10.0"
+		"firebase-admin": "^9.0.0"
 	},
 	"devDependencies": {
 		"eslint": "^5.12.0",

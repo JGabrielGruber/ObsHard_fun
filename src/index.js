@@ -19,32 +19,32 @@ const getData = async (col, key = null) => {
 admin.database().ref('/produtos').on('child_changed', async (proS) => {
 	const pro = proS.val();
 
-	if (pro.modelo) {
+	if (pro.modelo !== undefined) {
 		pro.modelo = await getData('/modelos', pro.modelo);
-		if (pro.modelo.arquitetura) {
+		if (pro.modelo.arquitetura !== undefined) {
 			pro.modelo.arquitetura = await getData(
 				'/arquiteturas', pro.modelo.arquitetura,
 			);
 			pro.arquitetura = pro.modelo.arquitetura.nome;
-			if (pro.modelo.arquitetura.categorias) {
+			if (pro.modelo.arquitetura.categorias !== undefined) {
 				pro.modelo.arquitetura.categorias = await getData(
 					'/categorias', pro.modelo.arquitetura.categorias,
 				);
 				pro.categoria = pro.modelo.arquitetura.categorias.nome;
 			}
 		}
-		if (pro.modelo.marca) {
+		if (pro.modelo.marca !== undefined) {
 			pro.modelo.marca = await getData('/marcas', pro.modelo.marca);
 			pro.marca = pro.modelo.marca.nome;
 		}
 		pro.ano = pro.modelo.ano;
 		pro.modelo = pro.modelo.nome;
 	}
-	if (pro.loja) {
+	if (pro.loja !== undefined) {
 		pro.loja = await getData('/lojas', pro.loja);
 		pro.loja = pro.loja.nome;
 	}
-	if (pro.variacao) {
+	if (pro.variacao !== undefined) {
 		pro.variacao = await getData('/variacoes', pro.variacao);
 		pro.variacao = pro.variacao.nome;
 	}
@@ -67,8 +67,56 @@ admin.database().ref('/produtos').on('child_changed', async (proS) => {
 });
 
 admin.database().ref('/produtos').on('child_added', async (snap) => {
-	const val = await snap.val();
-	admin.firestore().collection('tabelona').doc(snap.key).set(val);
+	if (!admin.firestore().collection().doc(snap.key).id) {
+	
+		const pro = snap.val();
+
+		if (pro.modelo !== undefined) {
+			pro.modelo = await getData('/modelos', pro.modelo);
+			if (pro.modelo.arquitetura !== undefined) {
+				pro.modelo.arquitetura = await getData(
+					'/arquiteturas', pro.modelo.arquitetura,
+				);
+				pro.arquitetura = pro.modelo.arquitetura.nome;
+				if (pro.modelo.arquitetura.categorias !== undefined) {
+					pro.modelo.arquitetura.categorias = await getData(
+						'/categorias', pro.modelo.arquitetura.categorias,
+					);
+					pro.categoria = pro.modelo.arquitetura.categorias.nome;
+				}
+			}
+			if (pro.modelo.marca !== undefined) {
+				pro.modelo.marca = await getData('/marcas', pro.modelo.marca);
+				pro.marca = pro.modelo.marca.nome;
+			}
+			pro.ano = pro.modelo.ano;
+			pro.modelo = pro.modelo.nome;
+		}
+		if (pro.loja !== undefined) {
+			pro.loja = await getData('/lojas', pro.loja);
+			pro.loja = pro.loja.nome;
+		}
+		if (pro.variacao !== undefined) {
+			pro.variacao = await getData('/variacoes', pro.variacao);
+			pro.variacao = pro.variacao.nome;
+		}
+
+		if (pro.precos && pro.precos.length) {
+			pro.preco = pro.precos[pro.precos.length - 1];
+			for (let i = 0, length = pro.precos.length; i < length; i++) {
+				if (!pro.mPreco) {
+					pro.mPreco = pro.precos[i];
+				}
+				if (pro.mPreco[0] < pro.preco[i][0]) {
+					pro.mPreco = pro.precos[i];
+				}
+			}
+		}
+
+		pro.update = Date.now();
+
+		admin.firestore().collection('tabelona').doc(snap.key).set(pro);
+	}
 });
 
 admin.database().ref('/produtos').on('child_removed', async (snap) => {
