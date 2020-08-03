@@ -67,7 +67,7 @@ admin.database().ref('/produtos').on('child_changed', async (proS) => {
 });
 
 admin.database().ref('/produtos').on('child_added', async (snap) => {
-	if (!admin.firestore().collection().doc(snap.key).id) {
+	if (!(await admin.firestore().collection('produtos').doc(snap.key).get()).exists) {
 	
 		const pro = snap.val();
 
