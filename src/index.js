@@ -51,8 +51,14 @@ admin.database().ref('/produtos').on('child_changed', async (proS) => {
 
 	if (pro.precos && pro.precos.length) {
 		pro.preco = pro.precos[pro.precos.length - 1];
-		pro.precos.sort((a, b) => a[0] - b[0])
-		pro.mPreco = pro.precos[0];
+		for (let i = 0, length = pro.precos.length; i < length; i++) {
+			if (!pro.mPreco) {
+				pro.mPreco = pro.precos[i];
+			}
+			if (pro.mPreco[0] < pro.preco[i][0]) {
+				pro.mPreco = pro.precos[i];
+			}
+		}
 	}
 
 	pro.update = Date.now();
@@ -63,4 +69,8 @@ admin.database().ref('/produtos').on('child_changed', async (proS) => {
 admin.database().ref('/produtos').once('child_added', async (snap) => {
 	const val = await snap.val();
 	admin.firestore().collection('tabelona').doc(snap.key).set(val);
+});
+
+admin.database().ref('/produtos').once('child_removed', async (snap) => {
+	admin.firestore().collection('tabelona').doc(snap.key).delete();
 });
