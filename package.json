@@ -1,0 +1,36 @@
+{
+	"name": "obshard_fun",
+	"version": "1.0.0",
+	"description": "Lambda functions for ObsHard Project",
+	"main": "src/index.js",
+	"scripts": {
+		"lint": "eslint .",
+		"serve": "firebase emulators:start --only functions",
+		"shell": "firebase functions:shell",
+		"start": "node -r dotenv/config -r esm src/index.js",
+		"deploy": "firebase deploy --only functions",
+		"logs": "firebase functions:log"
+	},
+	"engines": {
+		"node": "10"
+	},
+	"dependencies": {
+		"dotenv": "^8.2.0",
+		"esm": "^3.2.25",
+		"firebase-admin": "^8.10.0"
+	},
+	"devDependencies": {
+		"eslint": "^5.12.0",
+		"eslint-plugin-promise": "^4.0.1"
+	},
+	"repository": {
+		"type": "git",
+		"url": "git+https://github.com/JGabrielGruber/ObsHard_fun.git"
+	},
+	"author": "JGabriel Gruber",
+	"license": "AGPL-3.0-or-later",
+	"bugs": {
+		"url": "https://github.com/JGabrielGruber/ObsHard_fun/issues"
+	},
+	"homepage": "https://github.com/JGabrielGruber/ObsHard_fun#readme"
+}
