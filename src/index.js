@@ -66,11 +66,11 @@ admin.database().ref('/produtos').on('child_changed', async (proS) => {
 	admin.firestore().collection('tabelona').doc(proS.key).set(pro);
 });
 
-admin.database().ref('/produtos').once('child_added', async (snap) => {
+admin.database().ref('/produtos').on('child_added', async (snap) => {
 	const val = await snap.val();
 	admin.firestore().collection('tabelona').doc(snap.key).set(val);
 });
 
-admin.database().ref('/produtos').once('child_removed', async (snap) => {
+admin.database().ref('/produtos').on('child_removed', async (snap) => {
 	admin.firestore().collection('tabelona').doc(snap.key).delete();
 });
