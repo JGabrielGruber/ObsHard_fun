@@ -55,19 +55,20 @@ admin.database().ref('/produtos').on('child_changed', async (proS) => {
 			if (!pro.mPreco) {
 				pro.mPreco = pro.precos[i];
 			}
-			if (pro.mPreco[0] < pro.preco[i][0]) {
+			if (pro.mPreco[0] < pro.precos[i][0]) {
 				pro.mPreco = pro.precos[i];
 			}
 		}
 	}
 
 	pro.update = Date.now();
+	pro.precos = undefined;
 
 	admin.firestore().collection('tabelona').doc(proS.key).set(pro);
 });
 
 admin.database().ref('/produtos').on('child_added', async (snap) => {
-	if (!(await admin.firestore().collection('produtos').doc(snap.key).get()).exists) {
+	if (!(await admin.firestore().collection('produtos').select('id').where('id', '==', snap.key).get()).empty) {
 	
 		const pro = snap.val();
 
@@ -107,13 +108,14 @@ admin.database().ref('/produtos').on('child_added', async (snap) => {
 				if (!pro.mPreco) {
 					pro.mPreco = pro.precos[i];
 				}
-				if (pro.mPreco[0] < pro.preco[i][0]) {
+				if (pro.mPreco[0] < pro.precos[i][0]) {
 					pro.mPreco = pro.precos[i];
 				}
 			}
 		}
 
 		pro.update = Date.now();
+		pro.precos = undefined;
 
 		admin.firestore().collection('tabelona').doc(snap.key).set(pro);
 	}
