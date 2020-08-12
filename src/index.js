@@ -114,6 +114,10 @@ admin.database().ref('/produtos').on('child_added', async (snap) => {
 			}
 		}
 
+		if (pro.status !== 'ok') {
+			delete pro['preco'];
+		}
+
 		pro.update = Date.now();
 		delete pro['precos'];
 
